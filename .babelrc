@@ -1,4 +1,5 @@
 {
   "presets": ["react", "es2015", "stage-1"],
+  "plugins": ["material-ui"],
   "sourceMaps": true
 }
