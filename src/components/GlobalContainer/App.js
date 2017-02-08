@@ -58,24 +58,22 @@ class App extends Component {
                 <AppBar 
                     title={this.titleForPath()}
                     iconElementRight={
-                        <div style={styles.userContainerStyle}>
+                        <div 
+                            style={styles.userContainerStyle}
+                            onTouchTap={(event) => {
+                                event.preventDefault();
+                                this.setState({
+                                    popoverOpen: true,
+                                    anchorEl: event.currentTarget
+                                });
+                            }}
+                        >
                             <p style={styles.usernameTextStyle}>{username}</p>
-                            <Avatar 
-                                style={styles.avatarStyle}
-                                onTouchTap={(event) => {
-                                    event.preventDefault();
-                                    this.setState({
-                                        popoverOpen: true,
-                                        anchorEl: event.currentTarget
-                                    });
-                                }}
-                            >
-                                {username[0]}
-                            </Avatar>
+                            <Avatar style={styles.avatarStyle}>{username[0]}</Avatar>
                             <Popover
                                 open={this.state.popoverOpen}
                                 anchorEl={this.state.anchorEl}
-                                anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
                                 onRequestClose={() => {
                                     this.setState({
@@ -116,7 +114,8 @@ class App extends Component {
 const styles = {
     userContainerStyle: {
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
+        marginRight: 12
     },
     usernameTextStyle: {
         fontFamiliy: "Roboto, sans-serif",
@@ -132,8 +131,9 @@ const styles = {
         padding: 0
     },
     popoverListItemTextStyle: {
-        fontSize: 12,
-        fontFamiliy: "Roboto, sans-serif"
+        fontSize: 14,
+        fontFamiliy: "Roboto, sans-serif",
+        minWidth: 200
     }
 }
 
