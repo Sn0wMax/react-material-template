@@ -2,9 +2,9 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 
 import DesignContainer from './components/GlobalContainer/DesignContainer';
-import App from './components/GlobalContainer/App'
-import Home from './components/Home';
-import Settings from './components/Settings';
+import App from './components/App/App'
+import Home from './components/App/Home';
+import Settings from './components/App/Settings';
 import Login from './components/Login';
 
 export default (

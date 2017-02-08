@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { MuiThemeProvider, getMuiTheme, lightBaseTheme } from 'material-ui/styles';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import App from './App';
+import App from '../App/App';
 
 // Needed for onTouchTap
 injectTapEventPlugin();

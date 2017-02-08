@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { AppBar, Paper, LinearProgress, FlatButton, TextField } from 'material-ui';
+import { AppBar, Paper, LinearProgress, FlatButton, TextField, Checkbox } from 'material-ui';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux'
 import { setLocalUser, invalidateLocalUser } from '../actions/actions_user';
-import cookie from 'react-cookie'
-import { USER_COOKIE } from '../helper/CookieKeys';
+import LoginHelper from '../helper/LoginHelper';
 
 const style = require("../../style/Login.scss");
 
@@ -17,7 +16,8 @@ class Login extends Component {
             loginInProgress: false,
             loginError: false,
             username: "",
-            password: ""
+            password: "",
+            rememberMe: true
         }
     }
 
@@ -27,7 +27,7 @@ class Login extends Component {
             const logout = this.props.query.logout;
             console.log(logout);
             if (logout) {
-                cookie.remove(USER_COOKIE, { path: '/' });
+                LoginHelper.removeUserToken();
                 this.props.invalidateLocalUser();
             } else {
                 this.props.push("/app");
@@ -35,7 +35,12 @@ class Login extends Component {
             }
         }
         if (status == "unauthorized") {
-            const user = cookie.load(USER_COOKIE);
+            const tokenInfo = LoginHelper.getUserToken();
+            if (tokenInfo.decodeError != null) {
+                LoginHelper.removeUserToken();
+                return;
+            }
+            const user = tokenInfo.decodedData
             if (user != null) {
                 this.props.setLocalUser(user);
             }
@@ -69,11 +74,11 @@ class Login extends Component {
         setTimeout(() => {
             this.setState(newState);
             if (success) {
+                const userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFkbWluIn0.9nZa90Cr-pSf7sBp9XJgxqkpxfO4EIGs2dMFVn5XEzY";
                 const user = {
-                    username: this.state.username,
-                    image: "https://scontent-frt3-1.xx.fbcdn.net/v/t1.0-1/p50x50/14900512_1784636491798187_3749615752450685810_n.png?oh=8751f2bf5dff35f18debcb6b2f06eec1&oe=5947AE98"
-                };
-                cookie.save(USER_COOKIE, user, {path: "/"})
+                    username: "Admin"
+                }
+                LoginHelper.storeUserToken(userToken, this.state.rememberMe);
                 this.props.setLocalUser(user);
             }
         }, 3000);
@@ -115,6 +120,16 @@ class Login extends Component {
                             value={this.state.password}
                             disabled={this.state.loginInProgress}
                         />
+                        <Checkbox 
+                            label="Remember Me"
+                            style={styles.rememberMeCheckboxStyle} 
+                            checked={this.state.rememberMe} 
+                            onCheck={(event, checked) => {
+                                this.setState({
+                                    rememberMe: checked
+                                });
+                            }}
+                        />
                     </div>
                     <FlatButton 
                         style={styles.loginDialogButtonStyle}
@@ -149,6 +164,9 @@ const styles = {
         marginRight: 6,
         marginBottom: 12,
         alignSelf: "flex-end"
+    },
+    rememberMeCheckboxStyle: {
+        marginTop: 20
     }
 };
 

@@ -10,6 +10,11 @@ module.exports = {
     publicPath: '/assets/',
     filename: 'bundle.js'
   },
+  node: {
+      net: 'empty',
+      tls: 'empty',
+      dns: 'empty'
+  },
   module: {
     loaders: [{
       exclude: /node_modules/,
